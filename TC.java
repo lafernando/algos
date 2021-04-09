@@ -29,14 +29,23 @@ class Graph <T extends Comparable> {
         }
     }
 
-    public void addEdge(T source, T target, int weigth) {
+    public void addEdge(T source, T target, int weight) {
         this.addVert(source);
         this.addVert(target);
-        this.adjVerts.get(source).add(new Edge(target, weigth));
+        this.adjVerts.get(source).add(new Edge(target, weight));
+    }
+
+    public void addUEdge(T vert1, T vert2, int weight) {
+        this.addEdge(vert1, vert2, weight);
+        this.addEdge(vert2, vert1, weight);
     }
 
     public void addEdge(T source, T target) {
         this.addEdge(source, target, 1);
+    }
+
+    public void addUEdge(T vert1, T vert2) {
+        this.addUEdge(vert1, vert2, 1);
     }
 
     public List<Edge<T>> getEdges(T vert) {
@@ -76,19 +85,19 @@ class Path <T extends Comparable> implements Comparable<Path<T>> {
 
     @Override
     public String toString() {
-        return "Cost: " + cost + " Path: " + this.vertices();
+        return "Cost: " + this.cost + " Path: " + this.vertices();
     }
 
 }
 
 public class TC {
 
-    public static <T extends Comparable> Path<T> shortestPath(Graph<T> graph, T source, T target) {
+    public static <T extends Comparable> Path<T> dijkstra(Graph<T> graph, T source, T target) {
         PriorityQueue<Path<T>> queue = new PriorityQueue<>();
         Set<T> visited = new HashSet<T>();
         queue.add(new Path(null, source, 0));
         while (!queue.isEmpty()) {
-            Path<T> path = queue.peek();
+            Path<T> path = queue.remove();
             if (path.vertex.equals(target)) {
                 return path;
             }
@@ -98,7 +107,6 @@ public class TC {
                 }
                 visited.add(path.vertex);
             }
-
         }
         return null;
     }
@@ -109,8 +117,8 @@ public class TC {
         graph.addEdge(2, 3, 1);
         graph.addEdge(3, 4, 1);
         graph.addEdge(4, 5, 2);
-        graph.addEdge(3, 5, 1);
-        Path<Integer> path = shortestPath(graph, 1, 5);
+        graph.addEdge(3, 5, 4);
+        Path<Integer> path = dijkstra(graph, 1, 5);
         System.out.println(path);
     }
 
