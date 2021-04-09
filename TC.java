@@ -52,6 +52,10 @@ class Graph <T extends Comparable> {
         return this.adjVerts.get(vert);
     }
 
+    public Set<T> getVertices() {
+        return this.adjVerts.keySet();
+    }
+
 }
 
 class Path <T extends Comparable> implements Comparable<Path<T>> {
