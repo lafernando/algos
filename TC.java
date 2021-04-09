@@ -94,6 +94,10 @@ class Path <T extends Comparable> implements Comparable<Path<T>> {
 
 }
 
+interface ExecFunc<T extends Comparable> {
+    void run(T val);
+}
+
 public class TC {
 
     public static <T extends Comparable> Path<T> dijkstra(Graph<T> graph, T source, T target) {
@@ -115,15 +119,38 @@ public class TC {
         return null;
     }
 
+    public static <T extends Comparable> void dfs(Graph<T> graph, ExecFunc<T> func) {
+        Set<T> visited = new HashSet<T>();
+        for (T vertx : graph.getVertices()) {
+            dfsx(graph, func, visited, vertx);
+        }
+    }
+
+    private static <T extends Comparable> void dfsx(Graph<T> graph, ExecFunc func, Set<T> visited, T vertx) {
+        if (visited.contains(vertx)) return;
+        for (Edge<T> edge : graph.getEdges(vertx)) {
+            dfsx(graph, func, visited, edge.vertex);
+        }
+        func.run(vertx);
+        visited.add(vertx);
+    }
+
+    public static <T extends Comparable> List<T> topsort(Graph<T> graph) {
+        List<T> result = new ArrayList<>();
+        dfs(graph, (x) -> { result.add(x); });
+        Collections.reverse(result);
+        return result;
+    }
+
     public static void main(String[] args) {
         Graph<Integer> graph = new Graph();
         graph.addEdge(1, 2, 1);
         graph.addEdge(2, 3, 1);
-        graph.addEdge(3, 4, 1);
-        graph.addEdge(4, 5, 2);
-        graph.addEdge(3, 5, 4);
+        graph.addEdge(3, 5, 1);
+        graph.addEdge(5, 4, 2);
         Path<Integer> path = dijkstra(graph, 1, 5);
         System.out.println(path);
+        System.out.println(topsort(graph));
     }
 
 }
