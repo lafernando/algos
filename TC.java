@@ -98,15 +98,12 @@ interface ExecFunc<T extends Comparable> {
     void run(T val);
 }
 
+// AVL Tree (Balanced BST)
 class Node {
     
-    private Node left, right;
-    
+    private Node left, right;    
     private int data;
-
-    public int fullcount;
-
-    public int mycount;
+    public int fullcount, mycount, height, bf;
     
     public Node(int data) {
         this.data = data;
@@ -136,11 +133,83 @@ class Node {
     }
 
     private void update() {
-
+        int lh, rh;
+        if (this.left != null) {
+            lh = 1 + this.left.height;
+        } else {
+            lh = 0;
+        }
+        if (this.right != null) {
+            rh = 1 + this.right.height;
+        } else {
+            rh = 0;
+        }
+        this.height = Math.max(lh, rh);
+        this.bf = rh - lh;
     }
 
     private Node balance() {
+        // left heavy
+        if (this.bf == -2) {
+            if (this.left.bf <= 0) {
+                return this.leftLeftCase();
+            } else {
+                return this.leftRightCase();
+            }
+        } else if (this.bf == 2) { // right heavy
+            if (this.right.bf >= 0) {
+                return this.rightRightCase();
+            } else {
+                return this.rightLeftCase();
+            }
+        }
         return this;
+    }
+
+    private Node leftLeftCase() {
+        return this.rightRotation();
+    }
+
+    private Node rightRightCase() {
+        return this.leftRotation();
+    }
+
+    private Node leftRightCase() {
+        this.left = this.left.leftRotation();
+        return this.leftLeftCase();
+    }
+
+    private Node rightLeftCase() {
+        this.right = this.right.rightRotation();
+        return this.rightRightCase();
+    }
+
+    private Node rightRotation() {
+        Node x = this.left;
+        int a = this.fullcount - x.fullcount;
+        int b = x.fullcount;
+        int c = x.right != null ? x.right.fullcount : 0;
+        x.fullcount = x.fullcount + a;
+        this.fullcount = this.fullcount - b + c;
+        this.left = x.right;
+        x.right = this;
+        this.update();
+        x.update();
+        return x;
+    }
+
+    private Node leftRotation() {
+        Node x = this.right;
+        int a = this.fullcount - x.fullcount;
+        int b = x.fullcount;
+        int c = x.left != null ? x.left.fullcount : 0;
+        x.fullcount = x.fullcount + a;
+        this.fullcount = this.fullcount - b + c;
+        this.right = x.left;
+        x.left = this;
+        this.update();
+        x.update();
+        return x;
     }
 
     public int find(int value) {
@@ -165,7 +234,9 @@ class Node {
             if (this.right == null) {
                 return -1;
             } else {
-                return this.right.find(value) + tmp + this.mycount;
+                int tmp2 = this.right.find(value);
+                if (tmp2 == -1) return -1;
+                return tmp2 + tmp + this.mycount;
             }
         }
     }
@@ -230,15 +301,19 @@ public class TC {
     }
 
     public static void main(String[] args) {
-        Node root = new Node(10);
+        Node root = new Node(0);
         root = root.insert(1);
-        root = root.insert(12);
-        root = root.insert(12);
+        root = root.insert(2);
+        root = root.insert(3);
+        root = root.insert(4);
         root = root.insert(5);
-        root = root.insert(5);
-        root = root.insert(120);
-        System.out.println("A: " + root.find(12));
-        System.out.println("B: " + root.find(120));
+        root = root.insert(6);
+        root = root.insert(7);
+        root = root.insert(8);
+        root = root.insert(9);
+        System.out.println("A: " + root.find(0));
+        System.out.println("B: " + root.find(1));
+        System.out.println("C: " + root.find(9));
         System.out.println("Count: " + root.fullcount);
         System.out.println(root);
     }
