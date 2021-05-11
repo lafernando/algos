@@ -5,16 +5,35 @@ public class Solution {
 
     public static void main(String[] args) {
         Scanner in = new Scanner(new BufferedReader(new InputStreamReader(System.in)));
-        int n = in.nextInt();
-        for (int i = 1; i <= n; i++) {
-            int result = solve();
+        int t = in.nextInt();
+        for (int i = 1; i <= t; i++) {
+            long n = in.nextLong();
+            long result = solve(n);
             System.out.println("Case #" + i + ": " + result);
         }
     }
 
-    private static int solve() {
-        int result = 0;
-        return result;
+    private static long solve(long n) {
+        while (true) {
+            if (isOK(++n)) break;
+        }
+        return n;
+    }
+
+    private static boolean isOK(long n) {
+        String str = "" + n;
+        for (int i = 1; i < str.length(); i++) {
+            long x = Long.parseLong(str.substring(0, i));
+            StringBuilder builder = new StringBuilder("" + x);
+            while (true) {
+                builder.append("" + (++x));
+                String bs = builder.toString();
+                if (!str.startsWith(bs)) break;
+                if (str.equals(bs)) return true;
+                if (bs.length() > str.length()) break;
+            }
+        }
+        return false;
     }
 
 }

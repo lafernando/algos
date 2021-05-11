@@ -98,6 +98,93 @@ interface ExecFunc<T extends Comparable> {
     void run(T val);
 }
 
+class Node {
+    
+    private Node left, right;
+    
+    private int data;
+
+    public int fullcount;
+
+    public int mycount;
+    
+    public Node(int data) {
+        this.data = data;
+        this.fullcount = 1;
+        this.mycount = 1;
+    }
+    
+    public Node insert(int value) {
+        if (value == this.data) {
+            this.mycount++;
+        } else if (value < this.data) {
+            if (this.left == null) {
+                this.left = new Node(value);
+            } else {
+                this.left = this.left.insert(value);
+            }
+        } else {
+            if (this.right == null) {
+                this.right = new Node(value);
+            } else {
+                this.right = this.right.insert(value);
+            }
+        }
+        this.fullcount++;
+        this.update();
+        return this.balance();
+    }
+
+    private void update() {
+
+    }
+
+    private Node balance() {
+        return this;
+    }
+
+    public int find(int value) {
+        if (this.data == value) {
+            int result = 0;
+            if (this.left != null) {
+                result += this.left.fullcount;
+            }
+            return result;
+        }
+        if (value < this.data) {
+            if (this.left == null) {
+                return -1;
+            } else {
+                return this.left.find(value);
+            }
+        } else {
+            int tmp = 0;
+            if (this.left != null) {
+                tmp += this.left.fullcount;
+            }
+            if (this.right == null) {
+                return -1;
+            } else {
+                return this.right.find(value) + tmp + this.mycount;
+            }
+        }
+    }
+
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("{" + this.data + "(" + this.mycount + ")");
+        if (this.left != null) {
+            builder.append(", L->" + this.left);
+        }
+        if (this.right != null) {
+            builder.append(", R->" + this.right);
+        }
+        builder.append("}");
+        return builder.toString();
+    }
+
+}
+
 public class TC {
 
     public static <T extends Comparable> Path<T> dijkstra(Graph<T> graph, T source, T target) {
@@ -143,14 +230,17 @@ public class TC {
     }
 
     public static void main(String[] args) {
-        Graph<Integer> graph = new Graph();
-        graph.addEdge(1, 2, 1);
-        graph.addEdge(2, 3, 1);
-        graph.addEdge(3, 5, 1);
-        graph.addEdge(5, 4, 2);
-        Path<Integer> path = dijkstra(graph, 1, 5);
-        System.out.println(path);
-        System.out.println(topsort(graph));
+        Node root = new Node(10);
+        root = root.insert(1);
+        root = root.insert(12);
+        root = root.insert(12);
+        root = root.insert(5);
+        root = root.insert(5);
+        root = root.insert(120);
+        System.out.println("A: " + root.find(12));
+        System.out.println("B: " + root.find(120));
+        System.out.println("Count: " + root.fullcount);
+        System.out.println(root);
     }
 
 }
