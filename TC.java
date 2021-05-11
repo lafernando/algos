@@ -212,7 +212,7 @@ class Node {
         return x;
     }
 
-    public int find(int value) {
+    public int findLeft(int value) {
         if (this.data == value) {
             int result = 0;
             if (this.left != null) {
@@ -224,7 +224,7 @@ class Node {
             if (this.left == null) {
                 return -1;
             } else {
-                return this.left.find(value);
+                return this.left.findLeft(value);
             }
         } else {
             int tmp = 0;
@@ -234,7 +234,7 @@ class Node {
             if (this.right == null) {
                 return -1;
             } else {
-                int tmp2 = this.right.find(value);
+                int tmp2 = this.right.findLeft(value);
                 if (tmp2 == -1) return -1;
                 return tmp2 + tmp + this.mycount;
             }
@@ -311,9 +311,9 @@ public class TC {
         root = root.insert(7);
         root = root.insert(8);
         root = root.insert(9);
-        System.out.println("A: " + root.find(0));
-        System.out.println("B: " + root.find(1));
-        System.out.println("C: " + root.find(9));
+        System.out.println("A: " + root.findLeft(0));
+        System.out.println("B: " + root.findLeft(1));
+        System.out.println("C: " + root.findLeft(9));
         System.out.println("Count: " + root.fullcount);
         System.out.println(root);
     }
