@@ -166,6 +166,7 @@ public class SegmentTreeImpl {
         Integer[] vals = new Integer[] { 1, 2, 3, 4, 5 };
         SegmentTree st1 = new SegmentTree(vals, (v1, v2) -> (Integer) v1 + (Integer) v2);
         System.out.println(st1.query(0, 4));
+        System.out.println(st1.query(0, 2));
     }
 
     public static void test2() {
